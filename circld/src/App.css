@@ -1,0 +1,810 @@
+/* --- 1. GLOBAL SETTINGS & VARIABLES --- */
+:root {
+  --pastel-pink-bg: #fdf2f5;
+  --pastel-pink-card: #ffebf0;
+  --pastel-green-primary: #b2e2d2;
+  --pastel-green-hover: #96d1bc;
+  --text-dark: #4a4a4a;
+  --text-light: #6b6b6b;
+  --white: #ffffff;
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+  background-color: var(--pastel-pink-bg);
+  color: var(--text-dark);
+  min-height: 100vh;
+}
+
+/* --- 2. LAYOUT UTILITIES --- */
+.page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+.page.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  background-color: var(--white);
+  padding: 2.5rem;
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  max-width: 500px;
+  width: 100%;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- 3. TYPOGRAPHY & BUTTONS --- */
+h1 { font-size: 2.5rem; margin-bottom: 0.5rem; letter-spacing: -1px; text-align: center; }
+h2 { margin-bottom: 1.5rem; font-size: 1.8rem; text-align: center; }
+p { color: var(--text-light); text-align: center; }
+
+button {
+  background-color: var(--pastel-green-primary);
+  color: var(--text-dark);
+  border: none;
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background-color: var(--pastel-green-hover);
+  transform: translateY(-2px);
+}
+
+button:active { transform: scale(0.98); }
+
+button.secondary { background-color: var(--pastel-pink-card); }
+button.secondary:hover { background-color: #f8d7df; }
+
+/* --- 4. FORM ELEMENTS --- */
+form { display: flex; flex-direction: column; gap: 1rem; }
+
+input, textarea {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 2px solid var(--pastel-pink-bg);
+  background-color: var(--pastel-pink-bg);
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+input:focus, textarea:focus {
+  border-color: var(--pastel-green-primary);
+  background-color: var(--white);
+}
+
+/* --- 5. ACTIVITY CHIPS --- */
+.activities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 8px;
+  margin: 1rem 0;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background-color: var(--white);
+  border: 2px solid var(--pastel-pink-bg);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.activity-item input { display: none; }
+
+.activity-item:has(input:checked) {
+  background-color: var(--pastel-green-primary);
+  border-color: var(--pastel-green-primary);
+}
+/* --- 6. DASHBOARD LAYOUT (HOME) --- */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--pastel-pink-bg);
+}
+
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  background-color: var(--white);
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  border-right: 1px solid rgba(0, 0, 0, 0.03);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.sidebar h2 {
+  text-align: left;
+  color: var(--text-dark);
+  font-size: 1.5rem;
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sidebar nav button {
+  text-align: left;
+  background: transparent;
+  color: var(--text-light);
+  font-weight: 500;
+  padding: 12px 15px;
+}
+
+.sidebar nav button:hover {
+  background-color: var(--pastel-pink-bg);
+  color: var(--text-dark);
+  transform: translateX(5px);
+}
+
+/* Main Content Area */
+.main {
+  flex: 1;
+  padding: 3rem;
+  overflow-y: auto;
+}
+
+.main h1 { text-align: left; margin-bottom: 0.2rem; }
+.main h2 { text-align: left; font-size: 1.3rem; margin: 2rem 0 1rem 0; }
+.muted { text-align: left; color: var(--text-light); margin-bottom: 2rem; }
+
+/* Group Row (Horizontal Scroll) */
+.group-row {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 15px;
+}
+
+.group-card {
+  min-width: 200px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.group-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+}
+
+.group-card p {
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.group-card.add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed var(--pastel-green-primary);
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-light);
+  font-weight: 600;
+}
+
+/* Quick Actions */
+.quick-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.quick-actions button {
+  background-color: var(--white);
+  border: 1px solid var(--pastel-green-primary);
+  color: var(--text-dark);
+}
+
+/* Polls */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.poll-option {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  background-color: var(--pastel-pink-bg);
+  padding: 12px 20px;
+}
+
+.poll-option span {
+  background: var(--white);
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.poll-option:disabled {
+  cursor: default;
+  opacity: 0.8;
+  transform: none;
+}
+/* --- 7. PROFILE PAGE STYLES --- */
+
+.activities-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 1rem 0;
+  max-height: 300px; /* Optional: adds scrolling if the list gets too long */
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+/* Custom scrollbar for the activities list */
+.activities-list::-webkit-scrollbar {
+  width: 6px;
+}
+.activities-list::-webkit-scrollbar-thumb {
+  background-color: var(--pastel-pink-card);
+  border-radius: 10px;
+}
+
+.activity-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background-color: var(--pastel-pink-bg);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.activity-row:hover {
+  background-color: var(--pastel-pink-card);
+}
+
+/* Style for the checkbox when checked in the profile list */
+.activity-row input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--pastel-green-hover);
+  cursor: pointer;
+}
+
+.activity-row:has(input:checked) {
+  border-color: var(--pastel-green-primary);
+  background-color: var(--white);
+}
+
+.activity-row span {
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+.primary-btn {
+  width: 100%;
+  margin-top: 1.5rem;
+  background-color: var(--pastel-green-primary);
+}
+
+/* Adjusting profile card for better spacing */
+.page > h2 {
+  margin-top: 0;
+  margin-bottom: 2rem;
+}
+/* --- 8. POLLS PAGE REFINEMENTS --- */
+
+/* Enhance the grid specifically for the Polls page */
+.page .grid {
+  margin-top: 1.5rem;
+  align-items: start;
+}
+
+/* Update poll-option for a more professional "result" look */
+.poll-option {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  background-color: var(--pastel-pink-bg);
+  border: 1px solid transparent;
+  text-align: left;
+  z-index: 1;
+}
+
+/* Subtle border and color change when a poll is finished */
+.poll-option:disabled {
+  background-color: var(--white);
+  border-color: var(--pastel-pink-card);
+  color: var(--text-light);
+  opacity: 0.9;
+}
+
+/* The Vote Counter Badge */
+.poll-option span {
+  background: var(--pastel-green-primary);
+  color: var(--text-dark);
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  min-width: 35px;
+  text-align: center;
+}
+
+/* Confirmation text after voting */
+.voted-text {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--pastel-green-hover);
+  text-align: center;
+  background-color: #f0faf7; /* Extremely light green */
+  padding: 8px;
+  border-radius: 10px;
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+/* --- 9. GROUP DETAIL & CHAT STYLES --- */
+
+.group-container {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.group-title {
+  text-align: left;
+  font-size: 2.2rem;
+  margin-bottom: 0.2rem;
+  color: var(--text-dark);
+}
+
+.group-goal {
+  text-align: left;
+  font-size: 1.1rem;
+  color: var(--text-light);
+  font-style: italic;
+}
+
+/* Meta Badges */
+.group-meta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.badge {
+  background-color: var(--pastel-pink-card);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.badge.active {
+  background-color: var(--pastel-green-primary);
+}
+
+/* Discussion / Chat Bubbles */
+.discussion {
+  background-color: var(--white);
+  padding: 2rem;
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.discussion h4 {
+  color: var(--text-light);
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+}
+
+.message.bubble {
+  align-self: flex-start;
+  background-color: var(--pastel-pink-bg);
+  padding: 12px 18px;
+  border-radius: 18px 18px 18px 4px; /* Distinctive chat bubble shape */
+  max-width: 80% ;
+  line-height: 1.5;
+  color: var(--text-dark);
+  font-size: 0.95rem;
+}
+
+/* Chat Input Bar */
+.chat-bar {
+  display: flex;
+  gap: 10px;
+  background-color: var(--white);
+  padding: 10px;
+  border-radius: 50px; /* Pill shape */
+  box-shadow: var(--shadow);
+  margin-top: 1rem;
+}
+
+.chat-bar input {
+  border: none;
+  background: transparent;
+  padding: 10px 20px;
+  flex: 1;
+}
+
+.chat-bar input:focus {
+  background: transparent; /* Override global focus background */
+}
+
+.chat-bar button {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+/* --- 10. EVENTS & RSVP STYLES --- */
+
+/* Capacity Progress Styling */
+.capacity-text {
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-top: 10px;
+}
+
+/* Event Rating & Places */
+.card h3 + p {
+  font-size: 0.95rem;
+  margin-top: 4px;
+}
+
+.card p:contains("⭐") {
+  color: #e67e22; /* Warm star color */
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* Specific button gap for RSVP and Polls */
+.card button {
+  margin-top: 10px;
+  width: 100%; /* Stack buttons in these smaller grid cards */
+}
+
+/* Live Chat inside Event Card */
+.live-chat-box {
+  background-color: var(--pastel-pink-bg);
+  border-radius: 12px;
+  padding: 15px;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 15px;
+}
+
+.live-chat-box p {
+  text-align: left;
+  background: var(--white);
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+  width: fit-content;
+}
+
+/* Waitlist / Disabled RSVP */
+button:disabled {
+  background-color: #e0e0e0;
+  color: #999;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* RSVP Buttons specific colors */
+.card button:first-of-type:not(:disabled) {
+  background-color: var(--pastel-green-primary);
+}
+
+.card button:last-of-type:not(:disabled) {
+  background-color: var(--pastel-pink-card);
+}
+/* --- 11. TABBED INTERFACE & GROUP MANAGEMENT --- */
+
+/* Tab Container */
+.tabs {
+  display: flex;
+  gap: 10px;
+  border-bottom: 2px solid var(--pastel-pink-bg);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+/* Tab Buttons */
+.tabs button {
+  background: transparent;
+  color: var(--text-light);
+  padding: 8px 20px;
+  border-radius: 50px; /* Rounded pill look */
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  flex: 1; /* Makes tabs equal width */
+}
+
+/* Active Tab Highlight */
+.tabs button:hover {
+  background-color: var(--pastel-pink-bg);
+  transform: none; /* Keep it flat like a tab */
+}
+
+/* This targets the logic where we change colors based on state */
+/* If you want to use a specific class for the active tab, add className={activeTab === 'chat' ? 'active-tab' : ''} to your React buttons */
+.active-tab, .tabs button:focus {
+  background-color: var(--pastel-green-primary) !important;
+  color: var(--text-dark) !important;
+  box-shadow: var(--shadow);
+}
+
+/* Tab Content Transitions */
+.tab-content {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Spot Counter Highlight */
+.spots-left {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 12px;
+  background-color: #fff4e5; /* Soft warning orange/yellow */
+  color: #d35400;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+/* --- 12. COMMUNITIES DIRECTORY STYLES --- */
+
+/* Give Community cards a slightly different look */
+.page .grid .card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  padding: 2rem;
+  transition: border-color 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.page .grid .card:hover {
+  border-color: var(--pastel-pink-card);
+}
+
+.page .grid .card h3 {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-dark);
+}
+
+.page .grid .card p {
+  font-size: 0.95rem;
+  color: var(--text-light);
+  margin-bottom: 1.5rem;
+  line-height: 1.4;
+}
+
+/* Secondary Button style for 'View Groups' */
+.card .secondary-btn, .card button {
+  background-color: var(--white);
+  border: 2px solid var(--pastel-green-primary);
+  color: var(--text-dark);
+  font-weight: 700;
+  padding: 10px;
+}
+
+.card .secondary-btn:hover, .card button:hover {
+  background-color: var(--pastel-green-primary);
+  color: var(--text-dark);
+}
+
+/* Optional: Add a subtle icon background */
+.card::before {
+  content: '✨'; /* You can customize this or remove it */
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+/* --- 13. ALIGNMENT OVERRIDES --- */
+
+/* Ensures the landing page content is centered both ways */
+.page.center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* Fixes the drifting button issue */
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers children (h1, p, and button-group) */
+  gap: 10px;
+}
+
+/* Keeps buttons side-by-side and centered */
+.button-group {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+  width: 100%;
+}
+
+/* Prevents buttons from stretching too wide on landing */
+.button-group button {
+  min-width: 140px;
+  width: auto; /* Overrides the 100% width from section 10 */
+}
+/* Styling for radio-style activity items in Preferences */
+.activity-item:has(input[type="radio"]:checked) {
+  background-color: var(--pastel-green-primary);
+  border-color: var(--pastel-green-primary);
+  font-weight: bold;
+}
+
+.section-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-bottom: 10px;
+  display: block;
+}
+/* Styling for inactive group cards */
+.group-card.inactive {
+  cursor: default; /* Removes the hand pointer */
+  pointer-events: none; /* Disables all click events technically */
+  opacity: 0.9; /* Slightly faded to look "static" */
+  transition: none; /* Prevents popping/moving on hover */
+}
+
+.group-card.inactive:hover {
+  transform: none; /* Stops the card from lifting up */
+  box-shadow: var(--shadow); /* Keeps the shadow flat */
+  border-color: var(--border-color); /* Keeps border color consistent */
+}
+
+/* Ensure the 'Add' card still looks active */
+.group-card.add {
+  cursor: pointer;
+  border: 2px dashed var(--pastel-green-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: var(--pastel-green-primary);
+}
+/* Styling for selected radio chips */
+.activity-item.selected {
+  background-color: var(--pastel-green-primary);
+  border-color: var(--pastel-green-primary);
+  color: #fff;
+}
+
+.privacy-toggle input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--pastel-green-primary);
+}
+/* Full-page centering for the Create Group screen */
+.create-group-container {
+  width: 100%;
+  max-width: 600px; /* Makes the card wider and more professional */
+  padding: 20px;
+}
+
+.create-card {
+  padding: 40px !important; /* Extra breathing room */
+  width: 100%;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-main);
+}
+
+.privacy-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  padding: 15px;
+  background: var(--bg-main); /* Light contrast background */
+  border-radius: 12px;
+}
+
+/* Ensure buttons take up equal space */
+.create-card .button-group button {
+  flex: 1;
+}
+/* This ensures the 'page center' layout works for Create Group */
+.page.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: var(--bg-main);
+}
+
+.create-group-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 20px;
+}
